@@ -17,6 +17,10 @@ void playertoggle(int * playernum){
     else if(*playernum == 2) *playernum = 1;
 }
 
+void removenewline(char inputstring[]){
+    inputstring[strlen(inputstring)-1] = '\0';
+}
+
 int main(void){
     srand(time(NULL));
     printf("GREETINGS PROFESSOR FALKEN\n");
@@ -31,6 +35,8 @@ int main(void){
     int num1;
     int num2;
     int answer;
+    char player1name[20];
+    char player2name[20];
     while(true){
         
         fgets(input, 10, stdin);
@@ -46,24 +52,46 @@ int main(void){
         player1lives = 3;
         player2lives = 3;
         playernum = 1;
+        printf("ENTER PLAYER 1 NAME OR NO INPUT TO USE DEFAULT\n");
+        fgets(input, 10, stdin);
+        if(strlen(input) == 1) strcpy(player1name, "PLAYER 1");
+        else {
+            removenewline(input);
+            strcpy(player1name, input);
+        }
+        
+        printf("ENTER PLAYER 2 NAME OR NO INPUT TO USE DEFAULT\n");
+        fgets(input, 10, stdin);
+        if(strlen(input) == 1) strcpy(player2name, "PLAYER 2");
+        else {
+            removenewline(input);
+            strcpy(player2name, input);
+        }
         while((player1lives != 0) && (player2lives != 0)){
-            printf("PLAYER 1 LIVES: %d\tPLAYER 2 LIVES: %d\n", player1lives, player2lives);
-            printf("PLAYER %d: ", playernum);
+            printf("%s LIVES: %d\t%s LIVES: %d\n", player1name, player1lives, player2name, player2lives);
+            if(playernum == 1) printf("%s ", player1name);
+            else if(playernum == 2) printf("%s " , player2name);
             num1 = rand() % 20;
             num2 = rand() % 20;
             printf("WHAT DOES %d PLUS %d EQUAL? ", num1, num2);
             fgets(input, 10, stdin);
             answer = strtol(input, NULL, 10);
             if(answer != (num1+num2)){
-                printf("INCORRECT. PLAYER %d LOSES ONE LIFE.\n", playernum);
-                if(playernum == 1) player1lives--;
-                else if(playernum == 2) player2lives--;
+                if(playernum == 1) {
+                    printf("INCORRECT. %s LOSES ONE LIFE.\n\n", player1name);
+                    player1lives--;
+                }
+                else if(playernum == 2) {
+                    printf("INCORRECT. %s LOSES ONE LIFE.\n\n", player2name);
+                    player2lives--;
+                }
             }
             
             if(!(player1lives == 0) && !(player2lives == 0)) playertoggle(&playernum);
         }
         
-        printf("PLAYER %d HAS LOST ALL LIVES. PLAYER %d WILL BE DECOMISSIONED SHORTLY.\n", playernum, playernum);
+        if(player1lives == 0) printf("%s HAS LOST ALL LIVES. %s WILL BE DECOMISSIONED SHORTLY.\n", player1name, player1name);
+        else if(player2lives == 0) printf("%s HAS LOST ALL LIVES. %s WILL BE DECOMISSIONED SHORTLY.\n", player2name, player2name);
         printf("THIS GAME HAS ENDED. SHALL WE PLAY ANOTHER GAME? ");
     }
     return 0;
