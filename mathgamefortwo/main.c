@@ -18,6 +18,12 @@ typedef struct {
     int wins;
 } Player;
 
+enum operator {
+    addition = 0,
+    subtraction = 1,
+    multiplication = 2
+};
+
 void playertoggle(int * playernum){
     if(*playernum == 1) *playernum = 2;
     else if(*playernum == 2) *playernum = 1;
@@ -25,6 +31,44 @@ void playertoggle(int * playernum){
 
 void removenewline(char inputstring[]){
     inputstring[strlen(inputstring)-1] = '\0';
+}
+
+bool isrightanswer(char input[]){
+    int num1 = rand() % 20;
+    int num2 = rand() % 20;
+    enum operator whichop = rand() % 3;
+    bool retval;
+    if(whichop == addition){
+        printf("WHAT DOES %d PLUS %d EQUAL? ", num1, num2);
+    }
+    if(whichop == subtraction){
+        printf("WHAT DOES %d MINUS %d EQUAL? ", num1, num2);
+    }
+    if(whichop == multiplication){
+        printf("WHAT DOES %d TIMES %d EQUAL? ", num1, num2);
+    }
+    fgets(input, 10, stdin);
+    while( // This funky while condition only returns true if both these conditions are met:
+          (!((input[0] >= '0') && (input[0] <= '9'))) // The first character of the input is not a number
+          &&
+          !(input[0] == '-')){ // and the first character is not a dash, so this allows for negative number input
+        printf("THAT IS NOT A VALID RESPONSE. PLEASE ENTER A VALID RESPONSE.\n");
+        fgets(input, 10, stdin);
+    }
+    int answer = strtol(input, NULL, 10);
+    if(whichop == addition){
+        if(answer == (num1+num2)) retval = true;
+        else retval = false;
+    }
+    if(whichop == subtraction){
+        if(answer == (num1-num2)) retval = true;
+        else retval = false;
+    }
+    if(whichop == multiplication){
+        if(answer == (num1*num2)) retval = true;
+        else retval = false;
+    }
+    return retval;
 }
 
 int main(void){
@@ -40,9 +84,7 @@ int main(void){
     Player player2;
     player2.wins = 0;
     int playernum;
-    int num1;
-    int num2;
-    int answer;
+    bool answer;
     bool namesset = false;
     while(true){
         
@@ -85,16 +127,8 @@ int main(void){
             printf("%s LIVES: %d\t%s LIVES: %d\n", player1.name, player1.lives, player2.name, player2.lives);
             if(playernum == 1) printf("%s ", player1.name);
             else if(playernum == 2) printf("%s " , player2.name);
-            num1 = rand() % 20;
-            num2 = rand() % 20;
-            printf("WHAT DOES %d PLUS %d EQUAL? ", num1, num2);
-            fgets(input, 10, stdin);
-            while(!((input[0] >= '0') && (input[0] <= '9'))){
-                printf("THAT IS NOT A VALID RESPONSE. PLEASE ENTER A VALID RESPONSE.\n");
-                fgets(input, 10, stdin);
-            }
-            answer = strtol(input, NULL, 10);
-            if(answer != (num1+num2)){
+            answer = isrightanswer(input);
+            if(!answer){
                 if(playernum == 1) {
                     printf("INCORRECT. %s LOSES ONE LIFE.\n\n", player1.name);
                     player1.lives--;
@@ -103,6 +137,9 @@ int main(void){
                     printf("INCORRECT. %s LOSES ONE LIFE.\n\n", player2.name);
                     player2.lives--;
                 }
+            }
+            else {
+                printf("CORRECT.\n");
             }
             
             if(!(player1.lives == 0) && !(player2.lives == 0)) playertoggle(&playernum);
