@@ -12,6 +12,12 @@
 #include <stdbool.h>
 #include <time.h>
 
+typedef struct {
+    char name[20];
+    int lives;
+    int wins;
+} Player;
+
 void playertoggle(int * playernum){
     if(*playernum == 1) *playernum = 2;
     else if(*playernum == 2) *playernum = 1;
@@ -29,16 +35,14 @@ int main(void){
     char input[10];
     char startstring[] = "yes\n";
     char exitstring[] = "no\n";
+    Player player1;
+    player1.wins = 0;
+    Player player2;
+    player2.wins = 0;
     int playernum;
-    int player1lives;
-    int player2lives;
     int num1;
     int num2;
     int answer;
-    int player1wins = 0;
-    int player2wins = 0;
-    char player1name[20];
-    char player2name[20];
     bool namesset = false;
     while(true){
         
@@ -52,35 +56,35 @@ int main(void){
             continue;
         }
         
-        player1lives = 3;
-        player2lives = 3;
+        player1.lives = 3;
+        player2.lives = 3;
         playernum = 1;
         if(namesset == false){
             printf("ENTER PLAYER 1 NAME OR NO INPUT TO USE DEFAULT\n");
             fgets(input, 10, stdin);
-            if(strlen(input) == 1) strcpy(player1name, "PLAYER 1");
+            if(strlen(input) == 1) strcpy(player1.name, "PLAYER 1");
             else {
                 removenewline(input);
-                strcpy(player1name, input);
+                strcpy(player1.name, input);
             }
             
             printf("ENTER PLAYER 2 NAME OR NO INPUT TO USE DEFAULT\n");
             fgets(input, 10, stdin);
-            if(strlen(input) == 1) strcpy(player2name, "PLAYER 2");
+            if(strlen(input) == 1) strcpy(player2.name, "PLAYER 2");
             else {
                 removenewline(input);
-                strcpy(player2name, input);
+                strcpy(player2.name, input);
             }
             namesset = true;
         }
         else{
             printf("CURRENT PLAYER SCORES ARE:\n");
-            printf("%s: %d \t%s: %d\n", player1name, player1wins, player2name, player2wins);
+            printf("%s: %d \t%s: %d\n", player1.name, player1.wins, player2.name, player2.wins);
         }
-        while((player1lives != 0) && (player2lives != 0)){
-            printf("%s LIVES: %d\t%s LIVES: %d\n", player1name, player1lives, player2name, player2lives);
-            if(playernum == 1) printf("%s ", player1name);
-            else if(playernum == 2) printf("%s " , player2name);
+        while((player1.lives != 0) && (player2.lives != 0)){
+            printf("%s LIVES: %d\t%s LIVES: %d\n", player1.name, player1.lives, player2.name, player2.lives);
+            if(playernum == 1) printf("%s ", player1.name);
+            else if(playernum == 2) printf("%s " , player2.name);
             num1 = rand() % 20;
             num2 = rand() % 20;
             printf("WHAT DOES %d PLUS %d EQUAL? ", num1, num2);
@@ -92,25 +96,25 @@ int main(void){
             answer = strtol(input, NULL, 10);
             if(answer != (num1+num2)){
                 if(playernum == 1) {
-                    printf("INCORRECT. %s LOSES ONE LIFE.\n\n", player1name);
-                    player1lives--;
+                    printf("INCORRECT. %s LOSES ONE LIFE.\n\n", player1.name);
+                    player1.lives--;
                 }
                 else if(playernum == 2) {
-                    printf("INCORRECT. %s LOSES ONE LIFE.\n\n", player2name);
-                    player2lives--;
+                    printf("INCORRECT. %s LOSES ONE LIFE.\n\n", player2.name);
+                    player2.lives--;
                 }
             }
             
-            if(!(player1lives == 0) && !(player2lives == 0)) playertoggle(&playernum);
+            if(!(player1.lives == 0) && !(player2.lives == 0)) playertoggle(&playernum);
         }
         
-        if(player1lives == 0){
-            printf("%s HAS LOST ALL LIVES. %s WILL BE DECOMISSIONED SHORTLY.\n", player1name, player1name);
-            player2wins++;
+        if(player1.lives == 0){
+            printf("%s HAS LOST ALL LIVES. %s WILL BE DECOMISSIONED SHORTLY.\n", player1.name, player1.name);
+            player2.wins++;
         }
-        else if(player2lives == 0){
-            printf("%s HAS LOST ALL LIVES. %s WILL BE DECOMISSIONED SHORTLY.\n", player2name, player2name);
-            player1wins++;
+        else if(player2.lives == 0){
+            printf("%s HAS LOST ALL LIVES. %s WILL BE DECOMISSIONED SHORTLY.\n", player2.name, player2.name);
+            player1.wins++;
         }
         printf("THIS GAME HAS ENDED. SHALL WE PLAY ANOTHER GAME? ");
     }
