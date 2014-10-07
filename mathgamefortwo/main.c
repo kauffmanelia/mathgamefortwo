@@ -35,8 +35,11 @@ int main(void){
     int num1;
     int num2;
     int answer;
+    int player1wins = 0;
+    int player2wins = 0;
     char player1name[20];
     char player2name[20];
+    bool namesset = false;
     while(true){
         
         fgets(input, 10, stdin);
@@ -52,20 +55,27 @@ int main(void){
         player1lives = 3;
         player2lives = 3;
         playernum = 1;
-        printf("ENTER PLAYER 1 NAME OR NO INPUT TO USE DEFAULT\n");
-        fgets(input, 10, stdin);
-        if(strlen(input) == 1) strcpy(player1name, "PLAYER 1");
-        else {
-            removenewline(input);
-            strcpy(player1name, input);
+        if(namesset == false){
+            printf("ENTER PLAYER 1 NAME OR NO INPUT TO USE DEFAULT\n");
+            fgets(input, 10, stdin);
+            if(strlen(input) == 1) strcpy(player1name, "PLAYER 1");
+            else {
+                removenewline(input);
+                strcpy(player1name, input);
+            }
+            
+            printf("ENTER PLAYER 2 NAME OR NO INPUT TO USE DEFAULT\n");
+            fgets(input, 10, stdin);
+            if(strlen(input) == 1) strcpy(player2name, "PLAYER 2");
+            else {
+                removenewline(input);
+                strcpy(player2name, input);
+            }
+            namesset = true;
         }
-        
-        printf("ENTER PLAYER 2 NAME OR NO INPUT TO USE DEFAULT\n");
-        fgets(input, 10, stdin);
-        if(strlen(input) == 1) strcpy(player2name, "PLAYER 2");
-        else {
-            removenewline(input);
-            strcpy(player2name, input);
+        else{
+            printf("CURRENT PLAYER SCORES ARE:\n");
+            printf("%s: %d \t%s: %d\n", player1name, player1wins, player2name, player2wins);
         }
         while((player1lives != 0) && (player2lives != 0)){
             printf("%s LIVES: %d\t%s LIVES: %d\n", player1name, player1lives, player2name, player2lives);
@@ -94,8 +104,14 @@ int main(void){
             if(!(player1lives == 0) && !(player2lives == 0)) playertoggle(&playernum);
         }
         
-        if(player1lives == 0) printf("%s HAS LOST ALL LIVES. %s WILL BE DECOMISSIONED SHORTLY.\n", player1name, player1name);
-        else if(player2lives == 0) printf("%s HAS LOST ALL LIVES. %s WILL BE DECOMISSIONED SHORTLY.\n", player2name, player2name);
+        if(player1lives == 0){
+            printf("%s HAS LOST ALL LIVES. %s WILL BE DECOMISSIONED SHORTLY.\n", player1name, player1name);
+            player2wins++;
+        }
+        else if(player2lives == 0){
+            printf("%s HAS LOST ALL LIVES. %s WILL BE DECOMISSIONED SHORTLY.\n", player2name, player2name);
+            player1wins++;
+        }
         printf("THIS GAME HAS ENDED. SHALL WE PLAY ANOTHER GAME? ");
     }
     return 0;
