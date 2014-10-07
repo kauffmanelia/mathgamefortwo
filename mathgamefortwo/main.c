@@ -75,6 +75,10 @@ int main(void){
             num2 = rand() % 20;
             printf("WHAT DOES %d PLUS %d EQUAL? ", num1, num2);
             fgets(input, 10, stdin);
+            while(!((input[0] >= '0') && (input[0] <= '9'))){
+                printf("THAT IS NOT A VALID RESPONSE. PLEASE ENTER A VALID RESPONSE.\n");
+                fgets(input, 10, stdin);
+            }
             answer = strtol(input, NULL, 10);
             if(answer != (num1+num2)){
                 if(playernum == 1) {
